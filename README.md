@@ -15,11 +15,24 @@ A small script which allows downloading of large amount of files
 
 ## Usage
 
-```bash
-php console.php download <source.yml> ./download/folder -u HTTP_USER -p HTTP_PASSWORD
+```
+php console.php download <file> [<folder>] [-u user] [-p password] [-f]
+
+Arguments:
+  file                     The source yml file
+  path                     The local download path [default: "."]
+
+Options:
+  -f, --force-override     Force override of existing files
+  -u, --username=USERNAME  Define a HTTP user for download
+  -p, --password=PASSWORD  Define a HTTP password for download
+
+-u and -p only work together (both have to be set)
 ```
 
-### Example YML file
+## Example
+
+### example.yml
 
 ```yaml
 example1:
@@ -35,7 +48,10 @@ example2:
     - http://example.com/file9
 ```
 
-Downloading this example file with the parameters from **Usage** would create a folder/file tree like this:
+### Example usage
+
+Downloading this example file with the parameters `php console.php download example.yml ./download/folder` would create a folder/file tree like this:
+
 ```
 .
 └── download
