@@ -1,0 +1,16 @@
+{
+    "name": "thedava/yml-downloader",
+    "description": "YML Downloader",
+    "type": "project",
+    "minimum-stability": "stable",
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "require": {
+        "symfony/yaml": "^3.3",
+        "guzzlehttp/guzzle": "^6.3",
+        "davahome/console": "^2.0"
+    }
+}
