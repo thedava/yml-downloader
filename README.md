@@ -34,3 +34,21 @@ example2:
     - http://example.com/file8
     - http://example.com/file9
 ```
+
+Downloading this example file with the parameters from **Usage** would create a folder/file tree like this:
+```
+.
+└── path
+    └── download
+        ├── example1
+        │   ├── file1
+        │   ├── file2
+        │   ├── file3
+        │   ├── file4
+        │   └── file5
+        └── example2
+            ├── file6
+            ├── file7
+            ├── file8
+            └── file9
+```
