@@ -38,8 +38,8 @@ example2:
 Downloading this example file with the parameters from **Usage** would create a folder/file tree like this:
 ```
 .
-└── path
-    └── download
+└── download
+    └── folder
         ├── example1
         │   ├── file1
         │   ├── file2
