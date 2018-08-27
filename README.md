@@ -6,7 +6,7 @@ Nothing special. Just a small script that I needed for myself
 
 A small script which allows downloading of large amount of files
 - Uses yaml file as source
-- Downloads every file per yaml block parallel
+- Downloads every file per yaml block asynchronously (but block after block)
 
 **Cons:**
 - Not suitable for large files
