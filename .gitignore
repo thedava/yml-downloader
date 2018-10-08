@@ -1,4 +1,7 @@
 /.idea/
 /test/
 /vendor/
+/build/*
 *.phar
+
+!.gitkeep

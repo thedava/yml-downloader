@@ -93,6 +93,7 @@ class DownloadCommand extends AbstractCommand
                 file_put_contents($path . '/' . $key . '/' . basename($url), $response->getBody()->getContents());
                 $stats[$key]['count']++;
             }
+            unset($promise, $fulfilledPromise);
             $output->writeln('(total size: ' . ByteText::fromBytes($stats[$key]['size'])->toString() . ')');
         }
 

@@ -12,5 +12,12 @@
         "symfony/yaml": "^3.3",
         "guzzlehttp/guzzle": "^6.3",
         "davahome/console": "^2.0"
+    },
+    "scripts": {
+        "phar": [
+            "@composer install --no-dev -o",
+            "@php -d phar.readonly=0 bin/build-phar.php",
+            "@php build/yml-downloader.phar --version"
+        ]
     }
 }
