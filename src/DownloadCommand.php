@@ -19,21 +19,36 @@ class DownloadCommand extends AbstractCommand
             ->addArgument('path', InputArgument::OPTIONAL, 'The local path', '.')
             ->addOption('force-override', 'f', InputOption::VALUE_NONE, 'Force override of existing files')
             ->addOption('username', 'u', InputOption::VALUE_REQUIRED)
-            ->addOption('password', 'p', InputOption::VALUE_REQUIRED);
+            ->addOption('password', 'p', InputOption::VALUE_REQUIRED)
+            ->addOption('phar-compatibility', 'c', InputOption::VALUE_NONE, 'Enable phar compatibility mode');
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    protected function getFileNameByUrl($url)
+    {
+        list($fileName) = explode('?', basename($url));
+
+        return $fileName;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Validate YML file existence
+        $compatibilityMode = $input->getOption('phar-compatibility');
         $file = $input->getArgument('file');
-        if (!file_exists($file)) {
+
+        // Check for file existence
+        if (!$compatibilityMode && !file_exists($file)) {
             $output->writeln('<error>File not found!</error>');
 
             return 1;
         }
 
         // Read YML file
-        $content = Yaml::parse(file_get_contents($file));
+        $content = Yaml::parse(rtrim(file_get_contents($file)));
         if (!is_array($content)) {
             $output->writeln('<error>YAML has invalid structure!</error> Expecting top-level key with urls as children');
 
@@ -55,16 +70,19 @@ class DownloadCommand extends AbstractCommand
             'verify' => false,
         ]);
         foreach ($content as $key => $urls) {
+            $key = utf8_decode($key);
+
             $output->write('<question>Downloading ' . $key . '...</question> ');
             if (!is_dir($path . '/' . $key)) {
-                mkdir($path . '/' . $key, 0777, true);
+                @mkdir($path . '/' . $key, 0777, true);
             }
 
             $promise = [];
             foreach ($urls as $url) {
-                if (file_exists($path . '/' . $key . '/' . basename($url))) {
+                $fileName = $this->getFileNameByUrl($url);
+                if (file_exists($path . '/' . $key . '/' . $fileName)) {
                     if (!$force) {
-                        $output->writeln('<comment>Skipping file ' . basename($url) . '</comment>', OutputInterface::VERBOSITY_VERBOSE);
+                        $output->writeln('<comment>Skipping file ' . $fileName . '</comment>', OutputInterface::VERBOSITY_VERBOSE);
                         continue;
                     }
                 }
@@ -84,13 +102,14 @@ class DownloadCommand extends AbstractCommand
                 }
 
                 $stats[$key]['size'] += $response->getBody()->getSize();
-                if (file_exists($path . '/' . $key . '/' . basename($url))) {
+                $fileName = $this->getFileNameByUrl($url);
+                if (file_exists($path . '/' . $key . '/' . $fileName)) {
                     if (!$force) {
-                        $output->writeln('<comment>Skipping file ' . basename($url) . '</comment>', OutputInterface::VERBOSITY_VERBOSE);
+                        $output->writeln('<comment>Skipping file ' . $fileName . '</comment>', OutputInterface::VERBOSITY_VERBOSE);
                         continue;
                     }
                 }
-                file_put_contents($path . '/' . $key . '/' . basename($url), $response->getBody()->getContents());
+                file_put_contents($path . '/' . $key . '/' . $fileName, $response->getBody()->getContents());
                 $stats[$key]['count']++;
             }
             unset($promise, $fulfilledPromise);
